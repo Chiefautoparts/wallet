@@ -16,11 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from wallet import views as wallet_views
+from . import views
+
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts', include('accounts.urls')),
-    path('dashboard', wallet_views.dashboard, name='dashbaord'),
+    path('accounts/', include('accounts.urls')),
+    path('wallet/', include('wallet.urls')),
+    path('', views.landing_page, name='landing_page'),
 ]
