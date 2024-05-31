@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Dashboard</title>
+</head>
+<body>
+	<h2>Welcome, {{ request.user.first_name }} {{ request.user.last_name }}</h2>
+	<p>Your email: {{ request.user.email }}</p>
+	<p>Your Date of birth: {{ request.user.profile.date_of_birth }}</p>
+	<h3>Wallet Details</h3>
+	<p>Bitcoin Balance: {{ wallet.bitcoin_balance }}</p>
+
+	<a href="{% url 'logout' %}">Logout</a>
+</body>
+</html>
