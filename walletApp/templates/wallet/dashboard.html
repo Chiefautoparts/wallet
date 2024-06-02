@@ -9,8 +9,21 @@
 	<h2>Welcome, {{ request.user.first_name }} {{ request.user.last_name }}</h2>
 	<p>Your email: {{ request.user.email }}</p>
 	<p>Your Date of birth: {{ request.user.profile.date_of_birth }}</p>
+	
 	<h3>Wallet Details</h3>
-	<p>Bitcoin Balance: {{ wallet.bitcoin_balance }}</p>
+	<p>Bitcoin Balance: {{ wallet.bitcoin_balance }} BTC</p>
+	{% if usd_balance is not None %}
+		<p>Equivalent USD balance: ${{ usd_balance|floatformat:2 }}</p>
+	{% else %}
+		<p>Unable to fetch Bitcoin price, Please Try again.</p>
+	{% endif %}
+
+	<h3>Transaction History</h3>
+	<ul>
+		{% for transaction in transactions %}
+			<li>{{ transaction.date }]: {{ transaction.transaction_type }} {{ transaction.amount }} BTC (Transaction ID: {{ transaction.transaction_id }})</li>
+		{% endfor %}
+	</ul>
 
 	<a href="{% url 'logout' %}">Logout</a>
 </body>
