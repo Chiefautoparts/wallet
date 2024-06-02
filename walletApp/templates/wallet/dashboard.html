@@ -18,6 +18,13 @@
 		<p>Unable to fetch Bitcoin price, Please Try again.</p>
 	{% endif %}
 
+	<h3>Transaction History</h3>
+	<ul>
+		{% for transaction in transactions %}
+			<li>{{ transaction.date }]: {{ transaction.transaction_type }} {{ transaction.amount }} BTC (Transaction ID: {{ transaction.transaction_id }})</li>
+		{% endfor %}
+	</ul>
+
 	<a href="{% url 'logout' %}">Logout</a>
 </body>
 </html>
