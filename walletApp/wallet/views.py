@@ -18,15 +18,20 @@ def dashboard(request):
 									'transactions': transactions
 									})
 
-# display current balance
+# create a new bitcoin wallet & address
+def create_new_wallet(request):
 
 # add bitcoin to wallet
+def add_funds(request):
 
 # send to another wallet address
+def send_crypto(request):
 
 # purchase coin from crypto exchange
+def purchase_crypto(request):
 
 # sell crypto 
+def sell_crypto(request):
 
 # view transaction history 
-
+def view_transaction_history(request):
