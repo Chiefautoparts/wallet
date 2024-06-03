@@ -12,17 +12,24 @@
 	<p>Your Date of birth: {{ request.user.profile.date_of_birth }}</p>
 	
 	<h3>Wallet Details</h3>
-	<p>Bitcoin Balance: {{ wallet.bitcoin_balance }} BTC</p>
-	{% if usd_balance is not None %}
+	{% if wallet.blockchain_address %}
+		<p>Blockchain Address: {{ wallet.blockchain_address }}</p>
+		<p>Bitcoin Balance: {{ wallet.bitcoin_balance }} BTC</p>
 		<p>Equivalent USD balance: ${{ usd_balance|floatformat:2 }}</p>
 	{% else %}
-		<p>Unable to fetch Bitcoin price, Please Try again.</p>
+		<p>You do not have a wallet, <a href="{% url 'create_wallet' %}">Create Wallet</a></p>
 	{% endif %}
+
+	<button><a href="{% url 'buy_bitcoin' %}">Buy Bitcoin</a></button>
+	<button><a href="{% url 'sell_bitcoin' %}">Sell Bitcoin</a></button>
+	<button><a href="{% url 'add_bitcoin' %}">Add Bitcoin</a></button>
+	<button><a href="{% url 'send_bitcoin' %}">Send Bitcoin</a></button>
+
 
 	<h3>Transaction History</h3>
 	<ul>
 		{% for transaction in transactions %}
-			<li>{{ transaction.date }]: {{ transaction.transaction_type }} {{ transaction.amount }} BTC (Transaction ID: {{ transaction.transaction_id }})</li>
+			<li>{{ transaction.date }}: {{ transaction.transaction_type }} {{ transaction.amount }} BTC (Transaction ID: {{ transaction.transaction_id }})</li>
 		{% endfor %}
 	</ul>
 

@@ -1,15 +1,30 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Wallet, Transaction 
-from .utils import get_bitcoin_price
+from .models import Wallet, Transaction
+from .gemini_api import get_bitcoin_price, gemini_request
+from django.contrib import messages
+import decimal
+
+
+@login_required
+def create_wallet(request):
+	wallet, created = Wallet.objects.get_or_create(user=request.user)
+	if created or not wallet.blockchain_address:
+		wallet.blockchain_address = wallet.generate_blockchain_address()
+		wallet.save()
+		messages.success(request, 'Your wallet has been created')
+	else:
+		messages.info(request, 'You already have a wallet')
+	return redirect('dashboard')
 
 @login_required
 def dashboard(request):
-	wallet, ccreated = Wallet.objects.get_or_create(user=request.user)
+	wallet, created = Wallet.objects.get_or_create(user=request.user)
+	if created:
+		wallet.blockchain_address = wallet.generate_blockchain_address()
+		wallet.save()
 	bitcoin_price = get_bitcoin_price()
-	usd_balance = None
-	if bitcoin_price is not None:
-		usd_balance = wallet.bitcoin_balance * bitcoin_price
+	usd_balance = wallet.bitcoin_balance * decimal.Decimal(bitcoin_price)
 	transactions = Transaction.objects.filter(wallet=wallet).order_by('-date')
 	return render(request, 'wallet/dashboard.html', {
 									'wallet': wallet,
@@ -18,20 +33,81 @@ def dashboard(request):
 									'transactions': transactions
 									})
 
-# create a new bitcoin wallet & address
-def create_new_wallet(request):
+@login_required
+def add_bitcoin(request):
+	if request.method == 'POST':
+		amount = decimal.Decimal(requset.POST.get('amount'))
+		wallet = Wallet.objects.get(user=request.user)
+		wallet.bitcoin_balance += amount
+		wallet.save()
+		Transaction.objects.create(wallet=wallet, amount=amount, transaction_type='receive', transaction_id='internal')
+		messages.success(request, f'Added {amount} BTC to your wallet.')
+		return redirect('dashboard')
+	return render(request, 'wallet/add_bitcoin.html')
 
-# add bitcoin to wallet
-def add_funds(request):
+@login_required
+def send_bitcoin(request):
+	if request.method == 'POST':
+		amount = decimal.Decimal(request.POST.get('amount'))
+		address = request.POST.get('address')
+		wallet = Wallet.objects.get(user=request.user)
+		if wallet.bitcoin_balance >= amount:
+			wallet.bitcoin_balance -= amount
+			wallet.save()
+			Transaction.objects.create(wallet=wallet, amount=amount, transaction_type='send', transaction_id='external')
+			messages.success(request, f'Sent {amount} BTC to {address}.')
+		else:
+			messages.error(request, 'Insufficient balance.')
+		return redirect('dashboard')
+	return render(request, 'wallet/send_bitcoin.html')
 
-# send to another wallet address
-def send_crypto(request):
+@login_required
+def buy_bitcoin(request):
+	if request.method == 'POST':
+		amount_usd = decimal.Decimal(request.POST.get('amount_usd'))
+		bitcoin_price = get_bitcoin_price()
+		amount_btc = amount_usd / decimal.Decimal(bitcoin_price)
+		response = gemini_request('/v1/order/new', {
+			'symbol': 'btcusd',
+			'amount': str(amount_btc),
+			'price': str(bitcoin_price),
+			'side': 'buy',
+			'type': 'exchange limit',
+			})
+		if 'order_id' in response:
+			wallet = Wallet.objects.get(user=request.user)
+			wallet.bitcoin_balance += amount_btc
+			wallet.save()
+			Transaction.objects.create(wallet=wallet, amount=amount_btc, transaction_type='buy', transaction_id=response['order_id'])
+			messages.success(request, f'Bought {amount_btc} BTC for ${amount_usd}.')
+		else:
+			messages.error(request, 'Failed to buy Bitcoin.')
+		return redirect('dashboard')
+	return render(request, 'wallet/buy_bitcoin.html')
 
-# purchase coin from crypto exchange
-def purchase_crypto(request):
-
-# sell crypto 
-def sell_crypto(request):
-
-# view transaction history 
-def view_transaction_history(request):
+@login_required
+def sell_bitcoin(request):
+	if request.method == 'POST':
+		amount_btc = decimal.Decimal(request.POST.get('amount_btc'))
+		bitcoin_price = get_bitcoin_price()
+		amount_usd = amount_btc * decimal.Decimal(bitcoin_price)
+		response = gemini_request('/v1/order/new', {
+			'symbol': 'btcusd',
+			'amount': str(amount_btc),
+			'price': str(bitcoin_price),
+			'side': 'sell',
+			'type': 'exchange limit',
+		})
+		if 'order_id' in response:
+			wallet = Wallet.objects.get(user=request.user)
+			if wallet.bitcoin_balance >= amount_btc:
+				wallet.bitcoin_balance -= amount_btc
+				wallet.save()
+				Transaction.objects.create(wallet=wallet, amount=-amount_btc, transaction_type='sell', transaction_id=response['order_id'])
+				messages.success(request, f'Sold {amount_btc} BTC for ${amount_usd}.')
+			else:
+				messages.error(request, 'Insufficient balance')
+		else:
+			messages.error(request, 'Failed to sell bitcoin')
+		return redirect('dashboard')
+	return render(request, 'wallet/sell_bitcoin.html')

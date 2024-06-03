@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell Bitcoin</title>
+    </head>
+<body>
+    <div class="container">
+        <h2>Sell Bitcoin</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="amount_btc">Amount (BTC)</label>
+                <input type="text" id="amount_btc" name="amount_btc" required>
+            </div>
+            <button type="submit">Sell Bitcoin</button>
+        </form>
+    </div>
+</body>
+</html>
