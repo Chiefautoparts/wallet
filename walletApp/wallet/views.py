@@ -65,8 +65,8 @@ def send_bitcoin(request):
 def buy_bitcoin(request):
 	if request.method == 'POST':
 		amount_usd = decimal.Decimal(request.POST.get('amount_usd'))
-		bitcoin_price = get_bitcoin_price()
-		amount_btc = amount_usd / decimal.Decimal(bitcoin_price)
+		bitcoin_price = decimal.Decimal(get_bitcoin_price())
+		amount_btc = amount_usd / bitcoin_price
 		response = gemini_request('/v1/order/new', {
 			'symbol': 'btcusd',
 			'amount': str(amount_btc),
@@ -89,8 +89,8 @@ def buy_bitcoin(request):
 def sell_bitcoin(request):
 	if request.method == 'POST':
 		amount_btc = decimal.Decimal(request.POST.get('amount_btc'))
-		bitcoin_price = get_bitcoin_price()
-		amount_usd = amount_btc * decimal.Decimal(bitcoin_price)
+		bitcoin_price = decimal.Decimal(get_bitcoin_price())
+		amount_usd = amount_btc * bitcoin_price
 		response = gemini_request('/v1/order/new', {
 			'symbol': 'btcusd',
 			'amount': str(amount_btc),
