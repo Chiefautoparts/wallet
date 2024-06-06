@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from two_factor.urls import urlpatterns as tf_urls
 from . import views
 
 
@@ -25,4 +26,5 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('wallet/', include('wallet.urls')),
     path('', views.landing_page, name='landing_page'),
+    path('', include(tf_urls)),
 ]

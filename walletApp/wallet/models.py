@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from fernet_fields import EncryptedCharField, EncryptedDecimalField
 import uuid 
 
 class Wallet(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
-	bitcoin_balance = models.DecimalField(max_digits=16, decimal_places=8, default=0.0)
-	blockchain_address = models.CharField(max_length=64, unique=True, blank=True)
+	bitcoin_balance = models.EncryptedDecimalField(max_digits=16, decimal_places=8, default=0.0)
+	blockchain_address = models.EncryptedCharField(max_length=64, unique=True, blank=True)
 
 	def __str__(self):
 		return f"{self.user.username}'s Wallet"

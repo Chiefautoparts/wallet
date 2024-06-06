@@ -2,9 +2,27 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Wallet, Transaction
 from .gemini_api import get_bitcoin_price, gemini_request
+from gemini_api.endpoints.order import Order 
+from gemini_api.authentication import Authentication
 from django.contrib import messages
 import decimal
 
+
+auth = Authentication(
+	public_key = "XXXXXXXXXXXXXX", private_kay = "XXXXXXXXXXXXXX", sandbox=True,
+	)
+
+if __name__ == "__main__":
+	x = Order.new_order(
+		auth=auth,
+		symbol="btcusd",
+		amount="1",
+		price="20000",
+		side="buy",
+		options=["maker-or-cancel"],
+	)
+
+	print(x.order_id)
 
 @login_required
 def create_wallet(request):
