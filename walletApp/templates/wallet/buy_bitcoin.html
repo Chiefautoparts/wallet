@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Bitcoin</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/buy_bitcoin.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Buy Bitcoin</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="amount_usd">Amount (USD)</label>
+                <input type="text" id="amount_usd" name="amount_usd" required>
+            </div>
+            <button type="submit">Buy Bitcoin</button>
+        </form>
+    </div>
+</body>
+</html>
