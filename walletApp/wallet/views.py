@@ -16,7 +16,7 @@ def dashboard(request):
     bitcoin_price = decimal.Decimal(str(get_bitcoin_price()))
     usd_balance = wallet.bitcoin_balance * bitcoin_price
     transactions = Transaction.objects.filter(wallet=wallet).order_by('-date')
-    return render(request, 'wallet/dashboard.html', {
+    return render(request, '../landing_page.html', {
         'wallet': wallet,
         'bitcoin_price': bitcoin_price,
         'usd_balance': usd_balance,
@@ -32,7 +32,7 @@ def create_wallet(request):
         messages.success(request, 'Your wallet has been created.')
     else:
         messages.info(request, 'You already have a wallet.')
-    return redirect('dashboard')
+    return redirect('wallet:dashboard')
 
 @login_required
 def add_bitcoin(request):
@@ -43,7 +43,7 @@ def add_bitcoin(request):
         wallet.save()
         Transaction.objects.create(wallet=wallet, amount=amount, transaction_type='receive', transaction_id='internal')
         messages.success(request, f'Added {amount} BTC to your wallet.')
-        return redirect('dashboard')
+        return redirect('wallet:dashboard')
     return render(request, 'wallet/add_bitcoin.html')
 
 @login_required
@@ -59,7 +59,7 @@ def send_bitcoin(request):
             messages.success(request, f'Sent {amount} BTC to {address}.')
         else:
             messages.error(request, 'Insufficient balance.')
-        return redirect('dashboard')
+        return redirect('wallet:dashboard')
     return render(request, 'wallet/send_bitcoin.html')
 
 @login_required
@@ -83,7 +83,7 @@ def buy_bitcoin(request):
             messages.success(request, f'Bought {amount_btc} BTC for ${amount_usd}.')
         else:
             messages.error(request, 'Failed to buy Bitcoin.')
-        return redirect('dashboard')
+        return redirect('wallet:dashboard')
     return render(request, 'wallet/buy_bitcoin.html')
 
 @login_required
@@ -110,5 +110,5 @@ def sell_bitcoin(request):
                 messages.error(request, 'Insufficient balance.')
         else:
             messages.error(request, 'Failed to sell Bitcoin.')
-        return redirect('dashboard')
+        return redirect('wallet:dashboard')
     return render(request, 'wallet/sell_bitcoin.html')

@@ -21,7 +21,7 @@ def register(request):
 			user = authenticate(username=username, password=raw_password)
 			login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
-			return redirect('dashboard')
+			return redirect('wallet:dashboard')
 	else:
 		form = RegisterForm()
 	return render(request, 'accounts/register.html' , {'form': form})
@@ -35,11 +35,11 @@ def login_view(request):
 			user = authenticate(request, username=username_or_email, password=password)
 			if user is not None:
 				login(request, user, backend='accounts.backend.EmailOrUsernameModelBackend')
-				return redirect('dashboard')
+				return redirect('wallet:dashboard')
 	else:
 		form = AuthenticationForm()
 	return render(request, 'accounts/login.html', {'form': form})
 
 def logout_view(request):
 	logout(request)
-	return redirect('landing_page')
+	return redirect('wallet:dashboard')

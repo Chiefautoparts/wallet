@@ -22,7 +22,7 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),
-    path('wallet/', include('wallet.urls')),
+    path('accounts/', include('accounts.urls', namespace="accounts")),
+    path('wallet/', include('wallet.urls', namespace="wallet")),
     path('', views.landing_page, name='landing_page'),
 ]

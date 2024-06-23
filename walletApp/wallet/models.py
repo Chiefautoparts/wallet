@@ -5,7 +5,7 @@ import uuid
 class Wallet(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	bitcoin_balance = models.DecimalField(max_digits=16, decimal_places=8, default=0.0)
-	blockchain_address = models.CharField(max_length=64, unique=True, blank=True)
+	blockchain_address = models.CharField(max_length=64, unique=True, blank=True, default=None)
 
 
 	def __str__(self):
