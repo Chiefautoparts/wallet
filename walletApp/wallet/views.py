@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Wallet, Transaction
 from .gemini_api import get_bitcoin_price, gemini_request
 from django.contrib import messages
+import uuid
 import decimal  # Import the decimal module
 
 @login_required
@@ -16,7 +17,7 @@ def dashboard(request):
     bitcoin_price = decimal.Decimal(str(get_bitcoin_price()))
     usd_balance = wallet.bitcoin_balance * bitcoin_price
     transactions = Transaction.objects.filter(wallet=wallet).order_by('-date')
-    return render(request, '../landing_page.html', {
+    return render(request, 'landing_page.html', {
         'wallet': wallet,
         'bitcoin_price': bitcoin_price,
         'usd_balance': usd_balance,
