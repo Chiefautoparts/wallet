@@ -17,7 +17,7 @@ def dashboard(request):
     bitcoin_price = decimal.Decimal(str(get_bitcoin_price()))
     usd_balance = wallet.bitcoin_balance * bitcoin_price
     transactions = Transaction.objects.filter(wallet=wallet).order_by('-date')
-    return render(request, 'landing_page.html', {
+    return render(request, 'wallet/dashboard.html', {
         'wallet': wallet,
         'bitcoin_price': bitcoin_price,
         'usd_balance': usd_balance,

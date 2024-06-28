@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Account settings</title>
+</head>
+<body>
+	<h1>Current Details</h1>
+	<p>Current email: {{ request.user.email }}</p>
+	<p>Current username: {{ request.user.username }}</p>
+	<h2>Edit Details</h2>
+	<p><a href="{% url 'update_email' %}">Change Email</a></p>
+	<p><a href="{% url 'update_username' %}">Change Username</a></p>
+	<p><a href="{% url 'update_password' %}">Change Password</a></p>
+</body>
+</html>

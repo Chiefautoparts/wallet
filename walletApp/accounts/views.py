@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth import get_user_model
-from .forms import RegisterForm
+from .forms import RegisterForm, CustomAuthenticationForm
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import LoginView  
 
 User = get_user_model()
 
@@ -35,11 +36,20 @@ def login_view(request):
 			user = authenticate(request, username=username_or_email, password=password)
 			if user is not None:
 				login(request, user, backend='accounts.backend.EmailOrUsernameModelBackend')
-				return redirect('wallet:dashboard')
+			return redirect('wallet:dashboard')
 	else:
 		form = AuthenticationForm()
 	return render(request, 'accounts/login.html', {'form': form})
 
 def logout_view(request):
 	logout(request)
+	return redirect('wallet:dashboard')
+
+
+class CustomLoginView(LoginView):
+	authentication_form = CustomAuthenticationForm
+	template_name = 'accounts/login.html'
+
+
+def profile(request):
 	return redirect('wallet:dashboard')

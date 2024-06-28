@@ -12,7 +12,8 @@ class Wallet(models.Model):
 		return f"{self.user.username}'s Wallet"
 
 	def generate_blockchain_address(self):
-		return uuid.uuid().hex
+		unique_id = uuid.uuid4()
+		return unique_id.hex
 		
 class Transaction(models.Model):
 	wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
