@@ -141,3 +141,6 @@ AUTHENTICATION_BACKENDS = [
     'accounts.backends.EmailOrUsernameModelBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+LOGIN_REDIRECT_URL = 'wallet/dashboard'
+LOGIN_URL = '/login/'

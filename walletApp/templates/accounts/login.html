@@ -10,16 +10,18 @@
 <body>
 	<div class="container">
 		<h2>Login</h2>
-		<form method="post">
+		<form method="post" action="{% url 'accounts:login' %}">
 			{% csrf_token %}
-			{% if form.non_field_errors %}
-				<div class="error">{{ form.non_field_errors }}</div>
-			{% endif %}
 			{{ form.as_p }}
 			<button type="submit" class="btn btn-primary">Login</button>
 		</form>
+		{% if form.errors %}
+			<div class="alert alert-danger">
+				Invalid username or password. Please try again.
+			</div>
+		{% endif %}
+	</div>
 		<a href="{% url 'accounts:register' %}">Register</a>
 		<a href="{% url 'landing_page' %}">Home</a>
-	</div>
 </body>
 </html>

@@ -10,7 +10,7 @@ class UpdateEmailForm(forms.ModelForm):
 		model = User
 		fields = ['email']
 		widgets = {
-			'email': forms.EmailInupt(attrs={'class': 'form-control', 'placeholder': 'New Email'})
+			'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'New Email'})
 		}
 
 class UpdateUsernameForm(forms.ModelForm):

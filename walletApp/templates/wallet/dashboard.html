@@ -26,7 +26,7 @@
 			<li>{{ transaction.date }}: {{ transaction.transaction_type }} {{ transaction.amount }} BTC (Transaction ID: {{ transaction.transaction_id }})</li>
 		{% endfor %}
 	</ul>
-
+	<a href="{% url 'accounts:account_settings' %}">Account Settings<a>
 	<a href="{% url 'accounts:logout' %}">Logout</a>
 </body>
 </html>
